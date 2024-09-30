@@ -9,3 +9,4 @@ services:
         value: production
       - key: MONGODB_URI
         sync: false
+    nodeVersion: 16.14.0
