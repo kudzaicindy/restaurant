@@ -77,3 +77,11 @@ process.on('unhandledRejection', (reason, promise) => {
 
 // Serve static files from uploads directory
 app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
+
+// Serve static files from the React build
+app.use(express.static(path.join(__dirname, '../frontend/build')));
+
+// Handle React routing, return all requests to React app
+app.get('*', function(req, res) {
+  res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
+});
