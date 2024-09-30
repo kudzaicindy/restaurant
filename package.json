@@ -16,6 +16,7 @@
     "start": "node backend/server.js",
     "build": "cd frontend && npm install && npm run build",
     "heroku-postbuild": "npm run build",
-    "postinstall": "cd frontend && npm install"
+    "postinstall": "cd frontend && npm install",
+    "preinstall": "npm config set legacy-peer-deps true"
   }
 }
