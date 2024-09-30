@@ -1,0 +1,23 @@
+.menu-list {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.menu-item {
+  display: flex;
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.menu-item img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  margin-right: 20px;
+}
+
+.menu-item h4 {
+  margin-top: 0;
+}
