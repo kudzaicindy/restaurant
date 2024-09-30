@@ -5,8 +5,7 @@ const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const multer = require('multer');
 
-// Load environment variables
-dotenv.config({ path: path.join(__dirname, '.env') });
+dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 5001;
@@ -24,7 +23,7 @@ const upload = multer({ storage: storage });
 
 // Middleware
 const corsOptions = {
-  origin: ['http://localhost:5001', 'http://localhost:5000', 'http://localhost:3000'], // Add frontend URL
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
   optionsSuccessStatus: 200
 };
 
@@ -32,18 +31,18 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Connect to MongoDB with increased timeout
+// Connect to MongoDB
 if (process.env.MONGODB_URI) {
   mongoose.connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    serverSelectionTimeoutMS: 60000, // Increase to 60 seconds
-    socketTimeoutMS: 45000, // Increase to 45 seconds
+    serverSelectionTimeoutMS: 60000,
+    socketTimeoutMS: 45000,
   })
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => {
     console.error('Could not connect to MongoDB', err);
-    process.exit(1); // Exit the process if unable to connect to MongoDB
+    process.exit(1);
   });
 } else {
   console.error('MONGODB_URI is not defined in environment variables');
@@ -53,11 +52,6 @@ if (process.env.MONGODB_URI) {
 // Routes
 app.use('/api/reservations', require('./routes/reservations'));
 app.use('/api/menu', require('./routes/menu'));
-
-// Admin interface route
-app.get('/admin', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'admin.html'));
-});
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -77,11 +71,3 @@ process.on('unhandledRejection', (reason, promise) => {
 
 // Serve static files from uploads directory
 app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
-
-// Serve static files from the React build
-app.use(express.static(path.join(__dirname, '../frontend/build')));
-
-// Handle React routing, return all requests to React app
-app.get('*', function(req, res) {
-  res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
-});
